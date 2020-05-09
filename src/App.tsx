@@ -13,54 +13,60 @@ import csvParser from 'csv-parse'
 import config from './config.json'
 
 const zen2han = (str: string) => {
-  return str.replace(/[！-～]/g, function(s: string) {
+  return str.replace(/[！-～]/g, function (s: string) {
     return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
   }).replace(/　/g, ' ');
 }
 
 const App = () => {
-  const [ shopList, setShopList ] = React.useState<Iemeshi.ShopData[]>([])
+  const [shopList, setShopList] = React.useState<Iemeshi.ShopData[]>([])
 
   React.useEffect(() => {
     fetch(config.data_url)
-    .then((response) => {
-      return response.ok ? response.text() : Promise.reject(response.status);
-    })
-    .then((data) => {
-      csvParser(data, async (error, data) => {
-        if (error) {
-          console.log(error)
-          setShopList([])
-          return
-        }
+      .then((response) => {
+        return response.ok ? response.text() : Promise.reject(response.status);
+      })
+      .then((data) => {
+        csvParser(data, async (error, data) => {
+          if (error) {
+            console.log(error)
+            setShopList([])
+            return
+          }
 
-        const [header, ...records] = data;
+          const [header, ...records] = data;
 
-        const features = records.map((record: string) => {
-          const properties = header.reduce((prev: any, column: any) => {
-            const value = record[header.indexOf(column)];
-            prev[column] = zen2han(value);
-            return prev;
-          }, {});
+          const features = records.map((record: string) => {
+            const properties = header.reduce((prev: any, column: any) => {
+              const value = record[header.indexOf(column)];
+              prev[column] = zen2han(value);
+              return prev;
+            }, {});
 
-          return properties;
+            return properties;
+          });
+
+          const nextShopList: Iemeshi.ShopData[] = []
+          for (let i = 0; i < features.length; i++) {
+            const feature = features[i] as Iemeshi.ShopData
+            if (!feature['緯度'] || !feature['経度'] || !feature['店名']) {
+              continue;
+            }
+            if (!feature['緯度'].match(/^[0-9]+(\.[0-9]+)?$/)) {
+              continue
+            }
+            if (!feature['経度'].match(/^[0-9]+(\.[0-9]+)?$/)) {
+              continue
+            }
+            const shop = {
+              index: i,
+              ...feature
+            }
+            nextShopList.push(shop)
+          }
+          setShopList(nextShopList)
         });
-
-        const nextShopList: Iemeshi.ShopData[] = []
-        for (let i = 0; i < features.length; i++) {
-          const feature = features[i] as Iemeshi.ShopData
-          if (!feature['経度'] || !feature['緯度'] || !feature['店名']) {
-            continue;
-          }
-          const shop = {
-            index: i,
-            ...feature
-          }
-          nextShopList.push(shop)
-        }
-        setShopList(nextShopList)
       });
-    });
   }, [])
 
   return (
