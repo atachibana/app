@@ -89,10 +89,12 @@ const Content = (props: Props) => {
       layout: {
         'text-field': "{店名}",
         'text-font': ['Noto Sans Regular'],
+        'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+        'text-radial-offset': 0.5,
+        'text-justify': 'auto',
         'text-size': 12,
         'text-anchor': 'top',
         'text-max-width': 12,
-        'text-offset': [0, 1.2],
         'text-allow-overlap': false,
       },
     })
@@ -127,12 +129,14 @@ const Content = (props: Props) => {
       map.setLayoutProperty('poi-primary', 'visibility', 'none')
       setMapObject(map)
     }
+
     const orienteationchangeHandler = () => {
       map.resize()
     }
 
     // attach
     map.on('load', onMapLoad)
+
     window.addEventListener('orientationchange', orienteationchangeHandler)
 
     return () => {
