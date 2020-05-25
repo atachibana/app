@@ -64,10 +64,6 @@ const App = () => {
             }
             nextShopList.push(shop)
           }
-<<<<<<< HEAD
-          setShopList(nextShopList)
-        });
-=======
           if (!feature['経度'].match(/^[0-9]+(\.[0-9]+)?$/)) {
             continue
           }
@@ -80,7 +76,6 @@ const App = () => {
           nextShopList.push(shop)
         }
         setShopList(nextShopList)
->>>>>>> upstream/master
       });
   }, [])
 
