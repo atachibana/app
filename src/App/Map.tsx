@@ -60,20 +60,6 @@ const Content = (props: Props) => {
       },
     })
 
-    mapObject.on('mouseenter', 'shop-points', () => {
-      mapObject.getCanvas().style.cursor = 'pointer'
-    })
-
-    mapObject.on('mouseleave', 'shop-points', () => {
-      mapObject.getCanvas().style.cursor = ''
-    })
-
-    mapObject.on('click', 'shop-points', (event: any) => {
-      if (!event.features[0].properties.cluster) {
-        setShop(event.features[0].properties)
-      }
-    })
-
     mapObject.addLayer({
       id: 'shop-symbol',
       type: 'symbol',
@@ -97,6 +83,34 @@ const Content = (props: Props) => {
         'text-max-width': 12,
         'text-allow-overlap': false,
       },
+    })
+
+    mapObject.on('mouseenter', 'shop-points', () => {
+      mapObject.getCanvas().style.cursor = 'pointer'
+    })
+
+    mapObject.on('mouseleave', 'shop-points', () => {
+      mapObject.getCanvas().style.cursor = ''
+    })
+
+    mapObject.on('mouseenter', 'shop-symbol', () => {
+      mapObject.getCanvas().style.cursor = 'pointer'
+    })
+
+    mapObject.on('mouseleave', 'shop-symbol', () => {
+      mapObject.getCanvas().style.cursor = ''
+    })
+
+    mapObject.on('click', 'shop-points', (event: any) => {
+      if (!event.features[0].properties.cluster) {
+        setShop(event.features[0].properties)
+      }
+    })
+
+    mapObject.on('click', 'shop-symbol', (event: any) => {
+      if (!event.features[0].properties.cluster) {
+        setShop(event.features[0].properties)
+      }
     })
 
     setCluster(mapObject)
